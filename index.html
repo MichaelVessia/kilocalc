@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kilocalc</title>
+    <link rel="shortcut icon" href="public/logo.ico" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app">
+        <div class="body">
+            <div class="grid-container">
+                <div class="grid-item-left">
+                    <!-- Weight Input Section -->
+                    <div class="container">
+                        <div class="input-group">
+                            <label for="total-weight-input">Total Weight</label>
+                            <div class="input-with-unit">
+                                <input type="number" id="total-weight-input" placeholder="0" />
+                                <span class="unit-label" id="unit-display">kg</span>
+                            </div>
+                        </div>
+
+                        <!-- Unit Input -->
+                        <div class="input-group">
+                            <label>Unit</label>
+                            <div class="radio-group">
+                                <label>
+                                    <input type="radio" name="unit" value="kg" checked />
+                                    kg
+                                </label>
+                                <label>
+                                    <input type="radio" name="unit" value="lbs" />
+                                    lbs
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="spacer"></div>
+                    </div>
+
+                    <!-- Advanced Options -->
+                    <div class="advanced-options">
+                        <button id="toggle-advanced" class="btn btn-primary">Show Advanced Options</button>
+                        <div class="divider"></div>
+                        <div id="advanced-content" class="collapse">
+                            <!-- Collar Weight -->
+                            <div class="input-group">
+                                <label for="collar-weight-input">Collar Weight</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="collar-weight-input" value="2.5" />
+                                    <span class="unit-label">kg</span>
+                                </div>
+                            </div>
+                            <div class="spacer"></div>
+
+                            <!-- Bar Weight -->
+                            <div class="input-group">
+                                <label for="bar-weight-input">Bar Weight</label>
+                                <div class="input-with-unit">
+                                    <input type="number" id="bar-weight-input" value="20" />
+                                    <span class="unit-label">kg</span>
+                                </div>
+                            </div>
+                            <div class="spacer"></div>
+
+                            <!-- Rounding -->
+                            <div class="input-group">
+                                <label>Rounding</label>
+                                <div class="radio-group">
+                                    <label>
+                                        <input type="radio" name="rounding" value="up" />
+                                        Up
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="rounding" value="nearest" checked />
+                                        Nearest
+                                    </label>
+                                    <label>
+                                        <input type="radio" name="rounding" value="down" />
+                                        Down
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="spacer"></div>
+
+                            <!-- Available Plates -->
+                            <div class="input-group">
+                                <label>Available Plates (kg)</label>
+                                <div id="plates-kg-container" class="plates-container"></div>
+                            </div>
+                            <div class="input-group">
+                                <label>Available Plates (lbs)</label>
+                                <div id="plates-lbs-container" class="plates-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid-item-right">
+                    <div id="barbells-view" class="container"></div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <p>
+                    <a href="https://gitlab.com/michaelvessia/kilocalc">
+                        View the source, file an issue, or make changes
+                    </a>
+                </p>
+                <p>
+                    Want to support more powerlifting software?
+                    <a href="https://www.patreon.com/openpowerlifting">
+                        Donate to the cause!
+                    </a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

@@ -3,52 +3,9 @@
   "version": "0.1.0",
   "author": "Michael Vessia <michael@vessia.net>",
   "private": true,
-  "homepage": "./",
-  "dependencies": {
-    "@fontsource/roboto": "^4.4.5",
-    "@material-ui/core": "^4.11.4",
-    "cross-env": "^5.2.0",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-scripts": "3.0.0",
-    "styled-components": "^4.3.2"
-  },
+  "type": "module",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "cross-env CI=true react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint src/**/*.js"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "husky": ">=1",
-    "lint-staged": ">=8",
-    "prettier": "1.18.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.{js,css,json,md}": [
-      "prettier --write",
-      "git add"
-    ]
+    "start": "bunx serve .",
+    "dev": "bunx serve ."
   }
 }
