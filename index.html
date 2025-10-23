@@ -43,12 +43,20 @@
 
             <div class="drawer-content">
                 <div class="drawer-body">
+                    <!-- Use Collars -->
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="use-collars-checkbox" checked />
+                            Use Collars
+                        </label>
+                    </div>
+
                     <!-- Collar Weight -->
                     <div class="input-group">
                         <label for="collar-weight-input">Collar Weight</label>
                         <div class="input-with-unit">
                             <input type="number" id="collar-weight-input" value="2.5" />
-                            <span class="unit-label">kg</span>
+                            <span class="unit-label" id="collar-unit-label">kg</span>
                         </div>
                     </div>
 
@@ -57,7 +65,7 @@
                         <label for="bar-weight-input">Bar Weight</label>
                         <div class="input-with-unit">
                             <input type="number" id="bar-weight-input" value="20" />
-                            <span class="unit-label">kg</span>
+                            <span class="unit-label" id="bar-unit-label">kg</span>
                         </div>
                     </div>
 
@@ -82,11 +90,11 @@
 
                     <!-- Available Plates -->
                     <div class="input-group">
-                        <label>Available Plates (kg)</label>
+                        <label>Available Plates (pairs) (kg)</label>
                         <div id="plates-kg-container" class="plates-container"></div>
                     </div>
                     <div class="input-group">
-                        <label>Available Plates (lbs)</label>
+                        <label>Available Plates (pairs) (lbs)</label>
                         <div id="plates-lbs-container" class="plates-container"></div>
                     </div>
                 </div>
@@ -96,7 +104,7 @@
         <footer class="footer">
             <div class="container">
                 <p>
-                    <a href="https://gitlab.com/michaelvessia/kilocalc">
+                    <a href="https://github.com/michaelvessia/kilocalc">
                         View the source, file an issue, or make changes
                     </a>
                 </p>

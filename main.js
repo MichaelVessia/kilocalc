@@ -8,10 +8,11 @@ const state = {
   rounding: 'nearest',
   barWeight: 20,
   collarWeight: 2.5,
+  useCollars: true,
   // Store per-unit bar/collar weights
   savedWeights: {
     kg: { bar: 20, collar: 2.5 },
-    lbs: { bar: 45, collar: 0 }
+    lbs: { bar: 45, collar: 5.51 }
   },
   availablePlatesKg: [
     { weight: 50, pairs: 0 },
@@ -32,6 +33,51 @@ const state = {
     { weight: 2.5, pairs: 1 }
   ]
 };
+
+// LocalStorage functions
+const STORAGE_KEY = 'kilocalc-state';
+
+function saveState() {
+  const toSave = {
+    totalWeight: state.totalWeight,
+    unit: state.unit,
+    rounding: state.rounding,
+    useCollars: state.useCollars,
+    savedWeights: state.savedWeights,
+    availablePlatesKg: state.availablePlatesKg,
+    availablePlatesLbs: state.availablePlatesLbs
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+}
+
+function loadState() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (!saved) return;
+
+  try {
+    const parsed = JSON.parse(saved);
+    state.totalWeight = parsed.totalWeight || 0;
+    state.unit = parsed.unit || 'kg';
+    state.rounding = parsed.rounding || 'nearest';
+    state.useCollars = parsed.useCollars !== undefined ? parsed.useCollars : true;
+
+    if (parsed.savedWeights) {
+      state.savedWeights = parsed.savedWeights;
+    }
+
+    state.barWeight = state.savedWeights[state.unit].bar;
+    state.collarWeight = state.savedWeights[state.unit].collar;
+
+    if (parsed.availablePlatesKg) {
+      state.availablePlatesKg = parsed.availablePlatesKg;
+    }
+    if (parsed.availablePlatesLbs) {
+      state.availablePlatesLbs = parsed.availablePlatesLbs;
+    }
+  } catch (e) {
+    console.error('Failed to load state:', e);
+  }
+}
 
 // Helper functions
 function getPlates(unit) {
@@ -169,12 +215,15 @@ function renderBarbells() {
   const container = document.createElement('div');
   container.className = 'barbells-container';
 
+  // Calculate effective collar weight based on useCollars
+  const effectiveCollarWeight = state.useCollars ? state.collarWeight : 0;
+
   // Primary barbell
   const barLoad = weightToBarLoad(
     state.totalWeight,
     getPlates(state.unit),
     state.barWeight,
-    state.collarWeight
+    effectiveCollarWeight
   );
 
   const primaryCol = document.createElement('div');
@@ -190,7 +239,7 @@ function renderBarbells() {
     state.unit,
     getPlates(state.unit),
     displayWeight(state.barWeight),
-    state.collarWeight
+    displayWeight(effectiveCollarWeight)
   );
   primaryCol.appendChild(primaryBarbell);
 
@@ -214,12 +263,13 @@ function renderBarbells() {
   }
 
   let otherCollarWeight;
-  if (otherUnit === 'lbs' || (otherUnit === 'kg' && state.collarWeight === 0)) {
+  if (!state.useCollars) {
     otherCollarWeight = 0;
-  } else if (otherUnit === 'kg' && state.collarWeight > 0) {
+  } else if (otherUnit === 'kg') {
     otherCollarWeight = 2.5;
   } else {
-    otherCollarWeight = 5.51;
+    // lbs: convert 2.5kg to lbs
+    otherCollarWeight = kgToLbs(2.5);
   }
 
   const otherBarLoad = weightToBarLoad(
@@ -242,7 +292,7 @@ function renderBarbells() {
     otherUnit,
     getPlates(otherUnit),
     displayWeight(otherBarWeight),
-    otherCollarWeight
+    displayWeight(otherCollarWeight)
   );
   otherCol.appendChild(otherBarbell);
 
@@ -279,6 +329,7 @@ function renderPlatesInputs() {
       const newPairs = Number(e.target.value);
       if (!isNaN(newPairs)) {
         plate.pairs = newPairs;
+        saveState();
         renderBarbells();
       }
     });
@@ -303,6 +354,7 @@ function renderPlatesInputs() {
       const newPairs = Number(e.target.value);
       if (!isNaN(newPairs)) {
         plate.pairs = newPairs;
+        saveState();
         renderBarbells();
       }
     });
@@ -318,6 +370,7 @@ function setupEventListeners() {
   // Total weight input
   document.getElementById('total-weight-input').addEventListener('input', (e) => {
     state.totalWeight = Number(e.target.value) || 0;
+    saveState();
     renderBarbells();
   });
 
@@ -342,6 +395,10 @@ function setupEventListeners() {
       document.getElementById('bar-weight-input').value = state.barWeight;
       document.getElementById('collar-weight-input').value = state.collarWeight;
 
+      // Update unit labels
+      document.getElementById('bar-unit-label').textContent = newUnit;
+      document.getElementById('collar-unit-label').textContent = newUnit;
+
       // Update active state
       document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
       e.target.classList.add('active');
@@ -349,6 +406,7 @@ function setupEventListeners() {
       // Update hidden radio for compatibility
       document.getElementById(`unit-${newUnit}`).checked = true;
 
+      saveState();
       renderBarbells();
     });
   });
@@ -357,6 +415,7 @@ function setupEventListeners() {
   document.querySelectorAll('input[name="rounding"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
       state.rounding = e.target.value;
+      saveState();
       renderBarbells();
     });
   });
@@ -366,6 +425,7 @@ function setupEventListeners() {
     state.barWeight = Number(e.target.value) || 0;
     // Save to current unit
     state.savedWeights[state.unit].bar = state.barWeight;
+    saveState();
     renderBarbells();
   });
 
@@ -374,6 +434,26 @@ function setupEventListeners() {
     state.collarWeight = Number(e.target.value) || 0;
     // Save to current unit
     state.savedWeights[state.unit].collar = state.collarWeight;
+    saveState();
+    renderBarbells();
+  });
+
+  // Use collars checkbox
+  document.getElementById('use-collars-checkbox').addEventListener('change', (e) => {
+    state.useCollars = e.target.checked;
+
+    // Update collar weight input to reflect effective value
+    const collarInput = document.getElementById('collar-weight-input');
+    if (state.useCollars) {
+      // Set to saved collar weight for this unit
+      state.collarWeight = state.savedWeights[state.unit].collar;
+      collarInput.value = state.collarWeight;
+    } else {
+      // Show 0 but don't change saved value
+      collarInput.value = 0;
+    }
+
+    saveState();
     renderBarbells();
   });
 
@@ -402,7 +482,34 @@ function setupEventListeners() {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  loadState();
   setupEventListeners();
   renderPlatesInputs();
   renderBarbells();
+
+  // Update UI to match loaded state
+  const totalWeightInput = document.getElementById('total-weight-input');
+  if (totalWeightInput) {
+    totalWeightInput.value = state.totalWeight || '';
+  }
+
+  // Update unit toggle
+  document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.unit === state.unit);
+  });
+  document.getElementById(`unit-${state.unit}`).checked = true;
+
+  // Update bar/collar inputs
+  document.getElementById('bar-weight-input').value = state.barWeight;
+  document.getElementById('collar-weight-input').value = state.useCollars ? state.collarWeight : 0;
+
+  // Update unit labels
+  document.getElementById('bar-unit-label').textContent = state.unit;
+  document.getElementById('collar-unit-label').textContent = state.unit;
+
+  // Update use collars checkbox
+  document.getElementById('use-collars-checkbox').checked = state.useCollars;
+
+  // Update rounding radio
+  document.querySelector(`input[name="rounding"][value="${state.rounding}"]`).checked = true;
 });
