@@ -316,11 +316,19 @@ function setupEventListeners() {
     renderBarbells();
   });
 
-  // Unit radios
-  document.querySelectorAll('input[name="unit"]').forEach(radio => {
-    radio.addEventListener('change', (e) => {
-      state.unit = e.target.value;
-      document.getElementById('unit-display').textContent = state.unit;
+  // Unit toggle buttons
+  document.querySelectorAll('.unit-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const newUnit = e.target.dataset.unit;
+      state.unit = newUnit;
+
+      // Update active state
+      document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+
+      // Update hidden radio for compatibility
+      document.getElementById(`unit-${newUnit}`).checked = true;
+
       renderBarbells();
     });
   });
@@ -345,16 +353,27 @@ function setupEventListeners() {
     renderBarbells();
   });
 
-  // Advanced options toggle
-  const toggleBtn = document.getElementById('toggle-advanced');
-  const advancedContent = document.getElementById('advanced-content');
-  let isOpen = false;
+  // Drawer functionality
+  const drawer = document.getElementById('settings-drawer');
+  const backdrop = document.getElementById('drawer-backdrop');
+  const drawerHandle = document.getElementById('drawer-handle');
+  let isDrawerOpen = false;
 
-  toggleBtn.addEventListener('click', () => {
-    isOpen = !isOpen;
-    advancedContent.style.display = isOpen ? 'block' : 'none';
-    toggleBtn.textContent = isOpen ? 'Hide Advanced Options' : 'Show Advanced Options';
-  });
+  function toggleDrawer() {
+    isDrawerOpen = !isDrawerOpen;
+    if (isDrawerOpen) {
+      drawer.classList.add('open');
+      backdrop.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } else {
+      drawer.classList.remove('open');
+      backdrop.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  drawerHandle.addEventListener('click', toggleDrawer);
+  backdrop.addEventListener('click', toggleDrawer);
 }
 
 // Initialize
