@@ -170,7 +170,17 @@ describe("Bar load calculations", () => {
       { weight: 2.5, pairs: 2 }
     ];
     const result = weightToBarLoad(15, plates, 20, 2.5);
-    // 15kg total - 25kg (bar+collars) = -10kg, -5kg per side (negative, so no plates)
+    // 15kg < 25kg (bar+collars), so collars ignored: 15kg - 20kg = -5kg, -2.5kg per side
+    expect(result).toEqual([]);
+  });
+
+  test("ignores collars when total weight equals bar weight", () => {
+    const plates = [
+      { weight: 5, pairs: 2 },
+      { weight: 2.5, pairs: 2 }
+    ];
+    const result = weightToBarLoad(20, plates, 20, 2.5);
+    // 20kg < 25kg (bar+collars), so collars ignored: 20kg - 20kg = 0kg per side
     expect(result).toEqual([]);
   });
 
