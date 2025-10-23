@@ -564,9 +564,11 @@ function setupEventListeners() {
       // Set to saved collar weight for this unit
       state.collarWeight = state.savedWeights[state.unit].collar;
       collarInput.value = state.collarWeight;
+      collarInput.disabled = false;
     } else {
       // Show 0 but don't change saved value
       collarInput.value = 0;
+      collarInput.disabled = true;
     }
 
     saveState();
@@ -617,7 +619,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Update bar/collar inputs
   document.getElementById('bar-weight-input').value = state.barWeight;
-  document.getElementById('collar-weight-input').value = state.useCollars ? state.collarWeight : 0;
+  const collarInput = document.getElementById('collar-weight-input');
+  collarInput.value = state.useCollars ? state.collarWeight : 0;
+  collarInput.disabled = !state.useCollars;
 
   // Update unit labels
   document.getElementById('bar-unit-label').textContent = state.unit;

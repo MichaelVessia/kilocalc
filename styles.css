@@ -156,10 +156,8 @@ body {
 .input-with-unit {
   display: flex;
   align-items: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
   padding: 0.5rem;
-  background-color: white;
+  background-color: transparent;
 }
 
 .input-with-unit input {
