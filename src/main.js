@@ -3,7 +3,7 @@ import { weightToBarLoad } from './logic/barload.js';
 
 // State
 const state = {
-  totalWeight: 0,
+  totalWeight: 100,
   unit: 'kg',
   rounding: 'nearest',
   barWeight: 20,
@@ -59,7 +59,7 @@ function loadState() {
 
   try {
     const parsed = JSON.parse(saved);
-    state.totalWeight = parsed.totalWeight || 0;
+    state.totalWeight = parsed.totalWeight !== undefined ? parsed.totalWeight : 100;
     state.unit = parsed.unit || 'kg';
     state.rounding = parsed.rounding || 'nearest';
     state.useCollars = parsed.useCollars !== undefined ? parsed.useCollars : true;
@@ -231,6 +231,9 @@ function renderBarbells() {
   // Calculate effective collar weight based on useCollars
   const effectiveCollarWeight = state.useCollars ? state.collarWeight : 0;
 
+  // If total weight < bar + collars, don't show collars in UI
+  const displayCollarWeight = state.totalWeight < state.barWeight + effectiveCollarWeight * 2 ? 0 : effectiveCollarWeight;
+
   // Primary barbell
   const barLoad = weightToBarLoad(
     state.totalWeight,
@@ -252,7 +255,7 @@ function renderBarbells() {
     state.unit,
     getPlates(state.unit),
     displayWeight(state.barWeight),
-    displayWeight(effectiveCollarWeight)
+    displayWeight(displayCollarWeight)
   );
   primaryCol.appendChild(primaryBarbell);
 
@@ -285,6 +288,9 @@ function renderBarbells() {
     otherCollarWeight = kgToLbs(2.5);
   }
 
+  // If total weight < bar + collars, don't show collars in UI
+  const otherDisplayCollarWeight = otherWeight < otherBarWeight + otherCollarWeight * 2 ? 0 : otherCollarWeight;
+
   const otherBarLoad = weightToBarLoad(
     otherWeight,
     getPlates(otherUnit),
@@ -305,7 +311,7 @@ function renderBarbells() {
     otherUnit,
     getPlates(otherUnit),
     displayWeight(otherBarWeight),
-    displayWeight(otherCollarWeight)
+    displayWeight(otherDisplayCollarWeight)
   );
   otherCol.appendChild(otherBarbell);
 
