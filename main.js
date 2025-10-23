@@ -8,6 +8,11 @@ const state = {
   rounding: 'nearest',
   barWeight: 20,
   collarWeight: 2.5,
+  // Store per-unit bar/collar weights
+  savedWeights: {
+    kg: { bar: 20, collar: 2.5 },
+    lbs: { bar: 45, collar: 0 }
+  },
   availablePlatesKg: [
     { weight: 50, pairs: 0 },
     { weight: 25, pairs: 8 },
@@ -319,8 +324,23 @@ function setupEventListeners() {
   // Unit toggle buttons
   document.querySelectorAll('.unit-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
+      const oldUnit = state.unit;
       const newUnit = e.target.dataset.unit;
+
+      // Save current weights for old unit
+      state.savedWeights[oldUnit] = {
+        bar: state.barWeight,
+        collar: state.collarWeight
+      };
+
+      // Restore weights for new unit
       state.unit = newUnit;
+      state.barWeight = state.savedWeights[newUnit].bar;
+      state.collarWeight = state.savedWeights[newUnit].collar;
+
+      // Update input fields
+      document.getElementById('bar-weight-input').value = state.barWeight;
+      document.getElementById('collar-weight-input').value = state.collarWeight;
 
       // Update active state
       document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('active'));
@@ -344,12 +364,16 @@ function setupEventListeners() {
   // Bar weight
   document.getElementById('bar-weight-input').addEventListener('input', (e) => {
     state.barWeight = Number(e.target.value) || 0;
+    // Save to current unit
+    state.savedWeights[state.unit].bar = state.barWeight;
     renderBarbells();
   });
 
   // Collar weight
   document.getElementById('collar-weight-input').addEventListener('input', (e) => {
     state.collarWeight = Number(e.target.value) || 0;
+    // Save to current unit
+    state.savedWeights[state.unit].collar = state.collarWeight;
     renderBarbells();
   });
 

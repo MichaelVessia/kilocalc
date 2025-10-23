@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "bunx serve .",
-    "dev": "bunx serve ."
+    "dev": "bunx serve .",
+    "test": "bun test"
   }
 }
