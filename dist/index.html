@@ -1,38 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/logo.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
-
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kilocalc</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
+    <link rel="shortcut icon" href="/logo.ico" />
+  <script type="module" crossorigin src="/assets/index-C6AVcINu.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-Cf-0cRQ9.css">
+</head>
+<body>
+    <div class="app">
+        <div class="body">
+            <div class="main-container">
+                <!-- Weight Input Section -->
+                <div class="weight-input-card">
+                    <label for="total-weight-input" class="input-label">Total Weight</label>
+                    <div class="weight-input-wrapper">
+                        <input type="number" id="total-weight-input" placeholder="0" class="weight-input" />
+                        <div class="unit-toggle">
+                            <button type="button" class="unit-btn active" data-unit="kg">kg</button>
+                            <button type="button" class="unit-btn" data-unit="lbs">lbs</button>
+                        </div>
+                    </div>
+                    <!-- Hidden radio inputs for compatibility -->
+                    <input type="radio" name="unit" value="kg" checked style="display: none;" id="unit-kg" />
+                    <input type="radio" name="unit" value="lbs" style="display: none;" id="unit-lbs" />
+                </div>
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
+                <!-- Barbells View -->
+                <div id="barbells-view" class="container"></div>
+            </div>
+        </div>
 
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
-  </body>
+        <!-- Drawer Backdrop -->
+        <div id="drawer-backdrop" class="drawer-backdrop"></div>
+
+        <!-- Settings Drawer -->
+        <div id="settings-drawer" class="settings-drawer">
+            <div class="drawer-handle" id="drawer-handle">
+                <div class="drawer-handle-bar"></div>
+                <span class="drawer-handle-text">Configure Plates</span>
+            </div>
+
+            <div class="drawer-content">
+                <div class="drawer-body">
+                    <!-- Collar Weight -->
+                    <div class="input-group">
+                        <label for="collar-weight-input">Collar Weight</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="collar-weight-input" value="2.5" />
+                            <span class="unit-label" id="collar-unit-label">kg</span>
+                        </div>
+                        <label style="margin-top: 0.5rem;">
+                            <input type="checkbox" id="use-collars-checkbox" checked />
+                            Use Collars
+                        </label>
+                    </div>
+
+                    <!-- Bar Weight -->
+                    <div class="input-group">
+                        <label for="bar-weight-input">Bar Weight</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="bar-weight-input" value="20" />
+                            <span class="unit-label" id="bar-unit-label">kg</span>
+                        </div>
+                    </div>
+
+                    <!-- Rounding -->
+                    <div class="input-group">
+                        <label>Rounding</label>
+                        <div class="radio-group">
+                            <label>
+                                <input type="radio" name="rounding" value="up" />
+                                Up
+                            </label>
+                            <label>
+                                <input type="radio" name="rounding" value="nearest" checked />
+                                Nearest
+                            </label>
+                            <label>
+                                <input type="radio" name="rounding" value="down" />
+                                Down
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Available Plates -->
+                    <div class="input-group">
+                        <label>Available Plates (pairs) (kg)</label>
+                        <div id="plates-kg-container" class="plates-container"></div>
+                    </div>
+                    <div class="input-group">
+                        <label>Available Plates (pairs) (lbs)</label>
+                        <div id="plates-lbs-container" class="plates-container"></div>
+                    </div>
+
+                    <!-- Footer Links -->
+                    <div class="drawer-footer">
+                        <p>
+                            <a href="https://github.com/michaelvessia/kilocalc">
+                                View the source, file an issue, or make changes
+                            </a>
+                        </p>
+                        <p>
+                            Want to support more powerlifting software?
+                            <a href="https://www.patreon.com/openpowerlifting">
+                                Donate to the cause!
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
 </html>
