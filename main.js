@@ -31,7 +31,9 @@ const state = {
     { weight: 10, pairs: 1 },
     { weight: 5, pairs: 1 },
     { weight: 2.5, pairs: 1 }
-  ]
+  ],
+  // Custom plate colors
+  plateColors: {}
 };
 
 // LocalStorage functions
@@ -45,7 +47,8 @@ function saveState() {
     useCollars: state.useCollars,
     savedWeights: state.savedWeights,
     availablePlatesKg: state.availablePlatesKg,
-    availablePlatesLbs: state.availablePlatesLbs
+    availablePlatesLbs: state.availablePlatesLbs,
+    plateColors: state.plateColors
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
 }
@@ -74,6 +77,9 @@ function loadState() {
     if (parsed.availablePlatesLbs) {
       state.availablePlatesLbs = parsed.availablePlatesLbs;
     }
+    if (parsed.plateColors) {
+      state.plateColors = parsed.plateColors;
+    }
   } catch (e) {
     console.error('Failed to load state:', e);
   }
@@ -91,6 +97,13 @@ function getSmallestPlate(unit) {
 }
 
 function getPlateColor(weight, unit) {
+  // Check for custom color
+  const customKey = `${weight}-${unit}`;
+  if (state.plateColors[customKey]) {
+    return state.plateColors[customKey];
+  }
+
+  // Default colors
   if (unit === 'kg') {
     switch (weight) {
       case 25: return { plateColor: 'red', textColor: 'black' };
@@ -319,7 +332,18 @@ function renderPlatesInputs() {
     div.className = 'plate-input';
 
     const label = document.createElement('label');
+    label.className = 'plate-label';
     label.textContent = `${plate.weight}kg:`;
+
+    const colors = getPlateColor(plate.weight, 'kg');
+    const colorIndicator = document.createElement('span');
+    colorIndicator.className = 'color-indicator';
+    colorIndicator.style.backgroundColor = colors.plateColor;
+    colorIndicator.style.border = colors.plateColor === 'white' ? '1px solid #ccc' : 'none';
+
+    label.insertBefore(colorIndicator, label.firstChild);
+    label.style.cursor = 'pointer';
+    label.addEventListener('click', () => openColorPicker(plate.weight, 'kg'));
 
     const input = document.createElement('input');
     input.type = 'number';
@@ -344,7 +368,18 @@ function renderPlatesInputs() {
     div.className = 'plate-input';
 
     const label = document.createElement('label');
+    label.className = 'plate-label';
     label.textContent = `${plate.weight}lbs:`;
+
+    const colors = getPlateColor(plate.weight, 'lbs');
+    const colorIndicator = document.createElement('span');
+    colorIndicator.className = 'color-indicator';
+    colorIndicator.style.backgroundColor = colors.plateColor;
+    colorIndicator.style.border = colors.plateColor === 'white' ? '1px solid #ccc' : 'none';
+
+    label.insertBefore(colorIndicator, label.firstChild);
+    label.style.cursor = 'pointer';
+    label.addEventListener('click', () => openColorPicker(plate.weight, 'lbs'));
 
     const input = document.createElement('input');
     input.type = 'number';
@@ -363,6 +398,87 @@ function renderPlatesInputs() {
     div.appendChild(input);
     lbsContainer.appendChild(div);
   });
+}
+
+// Color picker
+function openColorPicker(weight, unit) {
+  const customKey = `${weight}-${unit}`;
+  const currentColors = getPlateColor(weight, unit);
+
+  // Create modal
+  const modal = document.createElement('div');
+  modal.className = 'color-picker-modal';
+
+  const modalContent = document.createElement('div');
+  modalContent.className = 'color-picker-content';
+
+  const title = document.createElement('h3');
+  title.textContent = `${weight}${unit} Plate Color`;
+  modalContent.appendChild(title);
+
+  // Predefined colors
+  const colors = [
+    { name: 'Red', bg: 'red', text: 'black' },
+    { name: 'Blue', bg: 'blue', text: 'white' },
+    { name: 'Yellow', bg: 'yellow', text: 'black' },
+    { name: 'Green', bg: 'green', text: 'black' },
+    { name: 'White', bg: 'white', text: 'black' },
+    { name: 'Black', bg: 'black', text: 'white' },
+    { name: 'Gray', bg: 'gray', text: 'black' },
+    { name: 'Orange', bg: 'orange', text: 'black' },
+    { name: 'Purple', bg: 'purple', text: 'white' },
+    { name: 'Pink', bg: 'pink', text: 'black' }
+  ];
+
+  const colorGrid = document.createElement('div');
+  colorGrid.className = 'color-grid';
+
+  colors.forEach(color => {
+    const colorBtn = document.createElement('button');
+    colorBtn.className = 'color-option';
+    colorBtn.style.backgroundColor = color.bg;
+    colorBtn.style.color = color.text;
+    colorBtn.textContent = weight;
+    if (color.bg === 'white') {
+      colorBtn.style.border = '1px solid #ccc';
+    }
+
+    colorBtn.addEventListener('click', () => {
+      state.plateColors[customKey] = { plateColor: color.bg, textColor: color.text };
+      saveState();
+      renderBarbells();
+      renderPlatesInputs();
+      document.body.removeChild(modal);
+    });
+
+    colorGrid.appendChild(colorBtn);
+  });
+
+  modalContent.appendChild(colorGrid);
+
+  // Reset button
+  const resetBtn = document.createElement('button');
+  resetBtn.className = 'color-reset-btn';
+  resetBtn.textContent = 'Reset to Default';
+  resetBtn.addEventListener('click', () => {
+    delete state.plateColors[customKey];
+    saveState();
+    renderBarbells();
+    renderPlatesInputs();
+    document.body.removeChild(modal);
+  });
+  modalContent.appendChild(resetBtn);
+
+  modal.appendChild(modalContent);
+
+  // Close on backdrop click
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) {
+      document.body.removeChild(modal);
+    }
+  });
+
+  document.body.appendChild(modal);
 }
 
 // Event handlers
