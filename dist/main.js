@@ -120,7 +120,7 @@ function getPlateColor(weight, unit) {
 }
 
 function getPlateHeight(weight, unit) {
-  const maxHeight = 110;
+  const maxHeight = 160;
 
   const kgHeights = {
     15: maxHeight * 0.9,
@@ -426,8 +426,8 @@ function openColorPicker(weight, unit) {
     { name: 'Black', bg: 'black', text: 'white' },
     { name: 'Gray', bg: 'gray', text: 'black' },
     { name: 'Orange', bg: 'orange', text: 'black' },
-    { name: 'Lime', bg: '#32CD32', text: 'black' },
-    { name: 'Dark Orange', bg: '#FF8C00', text: 'black' }
+    { name: 'Purple', bg: 'purple', text: 'white' },
+    { name: 'Pink', bg: 'pink', text: 'black' }
   ];
 
   const colorGrid = document.createElement('div');
