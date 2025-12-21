@@ -1,16 +1,16 @@
 import { describe, test, expect } from "bun:test";
-import { weightToBarLoad } from "./barload.js";
+import { weightToBarLoad, type Plate } from "./barload.ts";
 
 describe("Bar load calculations", () => {
   test("calculates correct plate distribution for kg", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 4 },
       { weight: 20, pairs: 2 },
       { weight: 15, pairs: 2 },
       { weight: 10, pairs: 2 },
       { weight: 5, pairs: 2 },
       { weight: 2.5, pairs: 2 },
-      { weight: 1.25, pairs: 2 }
+      { weight: 1.25, pairs: 2 },
     ];
     const barWeight = 20;
     const collarWeight = 2.5;
@@ -21,12 +21,12 @@ describe("Bar load calculations", () => {
   });
 
   test("calculates correct plate distribution for lbs", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 45, pairs: 4 },
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const barWeight = 45;
     const collarWeight = 0;
@@ -37,9 +37,9 @@ describe("Bar load calculations", () => {
   });
 
   test("handles custom bar weights", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 4 },
-      { weight: 5, pairs: 2 }
+      { weight: 5, pairs: 2 },
     ];
     const barWeight = 15; // Women's bar
     const collarWeight = 2.5;
@@ -50,9 +50,7 @@ describe("Bar load calculations", () => {
   });
 
   test("handles insufficient plates with remainder", () => {
-    const plates = [
-      { weight: 20, pairs: 1 }
-    ];
+    const plates: Plate[] = [{ weight: 20, pairs: 1 }];
     const barWeight = 20;
     const collarWeight = 2.5;
 
@@ -61,22 +59,22 @@ describe("Bar load calculations", () => {
     const result = weightToBarLoad(100, plates, barWeight, collarWeight);
     expect(result.length).toBe(2);
     expect(result[0]).toBe(20);
-    expect(parseFloat(result[1])).toBeCloseTo(17.5, 1);
+    expect(parseFloat(String(result[1]))).toBeCloseTo(17.5, 1);
   });
 
   test("bar weight preserved when switching units", () => {
     // Simulate: 100kg with 20kg bar, switch to lbs should use 45lb bar
-    const kgPlates = [
+    const kgPlates: Plate[] = [
       { weight: 25, pairs: 4 },
       { weight: 10, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
-    const lbsPlates = [
+    const lbsPlates: Plate[] = [
       { weight: 45, pairs: 4 },
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
 
     // 100kg with 20kg bar + 5kg collars = 25kg, leaves 75kg, so 37.5kg per side
@@ -89,11 +87,11 @@ describe("Bar load calculations", () => {
   });
 
   test("handles no collars (useCollars=false) in kg", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 4 },
       { weight: 20, pairs: 2 },
       { weight: 10, pairs: 2 },
-      { weight: 5, pairs: 2 }
+      { weight: 5, pairs: 2 },
     ];
     const barWeight = 20;
     const collarWeight = 0; // useCollars = false
@@ -104,10 +102,10 @@ describe("Bar load calculations", () => {
   });
 
   test("handles no collars (useCollars=false) in lbs", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 45, pairs: 4 },
       { weight: 25, pairs: 2 },
-      { weight: 10, pairs: 2 }
+      { weight: 10, pairs: 2 },
     ];
     const barWeight = 45;
     const collarWeight = 0; // useCollars = false
@@ -118,10 +116,10 @@ describe("Bar load calculations", () => {
   });
 
   test("collar weight is 2.5kg when useCollars=true in kg", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 4 },
       { weight: 10, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const barWeight = 20;
     const collarWeight = 2.5; // useCollars = true
@@ -132,12 +130,12 @@ describe("Bar load calculations", () => {
   });
 
   test("collar weight is 2.5kg converted to lbs when useCollars=true in lbs", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 45, pairs: 4 },
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const barWeight = 45;
     const collarWeight = 2.5 * 2.20462262; // 2.5kg in lbs = 5.51155655
@@ -151,13 +149,13 @@ describe("Bar load calculations", () => {
     expect(result[2]).toBe(10);
     expect(result[3]).toBe(2.5);
     // Last element is the remainder
-    expect(parseFloat(result[4])).toBeCloseTo(1.99, 1);
+    expect(parseFloat(String(result[4]))).toBeCloseTo(1.99, 1);
   });
 
   test("handles zero total weight", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 4 },
-      { weight: 20, pairs: 2 }
+      { weight: 20, pairs: 2 },
     ];
     const result = weightToBarLoad(0, plates, 20, 2.5);
     // 0 total - 25kg (bar+collars) = -25kg, -12.5kg per side (negative, so no plates added)
@@ -165,9 +163,9 @@ describe("Bar load calculations", () => {
   });
 
   test("handles total weight less than bar and collars", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const result = weightToBarLoad(15, plates, 20, 2.5);
     // 15kg < 25kg (bar+collars), so collars ignored: 15kg - 20kg = -5kg, -2.5kg per side
@@ -175,9 +173,9 @@ describe("Bar load calculations", () => {
   });
 
   test("ignores collars when total weight equals bar weight", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const result = weightToBarLoad(20, plates, 20, 2.5);
     // 20kg < 25kg (bar+collars), so collars ignored: 20kg - 20kg = 0kg per side
@@ -185,30 +183,28 @@ describe("Bar load calculations", () => {
   });
 
   test("handles exact weight match with no remainder", () => {
-    const plates = [
-      { weight: 20, pairs: 2 }
-    ];
+    const plates: Plate[] = [{ weight: 20, pairs: 2 }];
     const result = weightToBarLoad(100, plates, 20, 2.5);
     // 100kg - 25kg = 75kg, 37.5kg per side
     // Only have 20kg plates, so 20kg + 17.5kg remainder
     expect(result.length).toBe(2);
     expect(result[0]).toBe(20);
-    expect(parseFloat(result[1])).toBeCloseTo(17.5, 1);
+    expect(parseFloat(String(result[1]))).toBeCloseTo(17.5, 1);
   });
 
   test("handles empty plates array", () => {
-    const plates = [];
+    const plates: Plate[] = [];
     const result = weightToBarLoad(100, plates, 20, 2.5);
     // No plates available, all weight is remainder
     expect(result.length).toBe(1);
-    expect(parseFloat(result[0])).toBeCloseTo(37.5, 1);
+    expect(parseFloat(String(result[0]))).toBeCloseTo(37.5, 1);
   });
 
   test("handles plates with zero pairs available", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 0 },
       { weight: 20, pairs: 0 },
-      { weight: 10, pairs: 3 }
+      { weight: 10, pairs: 3 },
     ];
     const result = weightToBarLoad(100, plates, 20, 2.5);
     // 100kg - 25kg = 75kg, 37.5kg per side
@@ -216,15 +212,15 @@ describe("Bar load calculations", () => {
     expect(result[0]).toBe(10);
     expect(result[1]).toBe(10);
     expect(result[2]).toBe(10);
-    expect(parseFloat(result[3])).toBeCloseTo(7.5, 1);
+    expect(parseFloat(String(result[3]))).toBeCloseTo(7.5, 1);
   });
 
   test("uses plates in descending order", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 1 },
       { weight: 20, pairs: 1 },
       { weight: 10, pairs: 1 },
-      { weight: 5, pairs: 1 }
+      { weight: 5, pairs: 1 },
     ];
     const result = weightToBarLoad(145, plates, 20, 2.5);
     // 145kg - 25kg = 120kg, 60kg per side
@@ -233,21 +229,19 @@ describe("Bar load calculations", () => {
   });
 
   test("stops when plates run out", () => {
-    const plates = [
-      { weight: 25, pairs: 1 }
-    ];
+    const plates: Plate[] = [{ weight: 25, pairs: 1 }];
     const result = weightToBarLoad(145, plates, 20, 2.5);
     // 145kg - 25kg = 120kg, 60kg per side
     // Only one pair of 25kg plates
     expect(result.length).toBe(2);
     expect(result[0]).toBe(25);
-    expect(parseFloat(result[1])).toBeCloseTo(35, 1);
+    expect(parseFloat(String(result[1]))).toBeCloseTo(35, 1);
   });
 
   test("handles very small fractional weights", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 1.25, pairs: 2 },
-      { weight: 0.5, pairs: 2 }
+      { weight: 0.5, pairs: 2 },
     ];
     const result = weightToBarLoad(25, plates, 20, 2.5);
     // 25kg - 25kg = 0kg per side
@@ -255,12 +249,12 @@ describe("Bar load calculations", () => {
   });
 
   test("handles precision in bar and collar calculation", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 45, pairs: 4 },
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
       { weight: 5, pairs: 2 },
-      { weight: 2.5, pairs: 2 }
+      { weight: 2.5, pairs: 2 },
     ];
     const barWeight = 45;
     const collarWeight = 5.51155655; // 2.5kg converted to lbs
@@ -271,22 +265,22 @@ describe("Bar load calculations", () => {
   });
 
   test("handles very large total weight", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 50, pairs: 10 },
       { weight: 25, pairs: 10 },
-      { weight: 20, pairs: 10 }
+      { weight: 20, pairs: 10 },
     ];
     const result = weightToBarLoad(500, plates, 20, 2.5);
     // 500kg - 25kg = 475kg, 237.5kg per side
     // Should use multiple 50kg plates
-    expect(result.filter(p => p === 50).length).toBeGreaterThan(0);
+    expect(result.filter((p) => p === 50).length).toBeGreaterThan(0);
   });
 
   test("handles bar weight of zero", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
-      { weight: 5, pairs: 2 }
+      { weight: 5, pairs: 2 },
     ];
     const result = weightToBarLoad(60, plates, 0, 0);
     // 60kg total, 30kg per side
@@ -294,10 +288,10 @@ describe("Bar load calculations", () => {
   });
 
   test("handles collar weight of zero (no collars)", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
-      { weight: 5, pairs: 2 }
+      { weight: 5, pairs: 2 },
     ];
     const result = weightToBarLoad(80, plates, 20, 0);
     // 80kg - 20kg = 60kg, 30kg per side
@@ -305,10 +299,10 @@ describe("Bar load calculations", () => {
   });
 
   test("handles fractional bar and collar weights", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 2 },
       { weight: 10, pairs: 2 },
-      { weight: 5, pairs: 2 }
+      { weight: 5, pairs: 2 },
     ];
     const result = weightToBarLoad(100, plates, 15.5, 2.25);
     // bar + 2*collar = 15.5 + 4.5 = 20
@@ -317,9 +311,7 @@ describe("Bar load calculations", () => {
   });
 
   test("remainder is formatted to 3 decimal places", () => {
-    const plates = [
-      { weight: 20, pairs: 1 }
-    ];
+    const plates: Plate[] = [{ weight: 20, pairs: 1 }];
     const result = weightToBarLoad(100, plates, 20, 2.5);
     // Remainder should be formatted as string with 3 decimals
     expect(result.length).toBe(2);
@@ -327,12 +319,12 @@ describe("Bar load calculations", () => {
   });
 
   test("handles plates that exactly equal side weight", () => {
-    const plates = [
+    const plates: Plate[] = [
       { weight: 25, pairs: 2 },
       { weight: 20, pairs: 1 },
       { weight: 10, pairs: 1 },
       { weight: 5, pairs: 1 },
-      { weight: 2.5, pairs: 1 }
+      { weight: 2.5, pairs: 1 },
     ];
     const result = weightToBarLoad(140, plates, 20, 2.5);
     // 140 - 25 = 115, 57.5 per side

@@ -1,51 +1,51 @@
 import { describe, test, expect } from "bun:test";
-import { kgToLbs, lbsToKg, displayWeight, plateRound } from "./units.js";
+import { kgToLbs, lbsToKg, displayWeight, plateRound, kg, lbs } from "./units.ts";
 
 describe("Unit conversion", () => {
   test("kgToLbs converts correctly", () => {
-    expect(kgToLbs(20)).toBeCloseTo(44.09, 2);
-    expect(kgToLbs(100)).toBeCloseTo(220.46, 2);
-    expect(kgToLbs(45.36)).toBeCloseTo(100, 2);
+    expect(kgToLbs(kg(20))).toBeCloseTo(44.09, 2);
+    expect(kgToLbs(kg(100))).toBeCloseTo(220.46, 2);
+    expect(kgToLbs(kg(45.36))).toBeCloseTo(100, 2);
   });
 
   test("lbsToKg converts correctly", () => {
-    expect(lbsToKg(45)).toBeCloseTo(20.41, 2);
-    expect(lbsToKg(220)).toBeCloseTo(99.79, 2);
-    expect(lbsToKg(100)).toBeCloseTo(45.36, 2);
+    expect(lbsToKg(lbs(45))).toBeCloseTo(20.41, 2);
+    expect(lbsToKg(lbs(220))).toBeCloseTo(99.79, 2);
+    expect(lbsToKg(lbs(100))).toBeCloseTo(45.36, 2);
   });
 
   test("kgToLbs handles zero", () => {
-    expect(kgToLbs(0)).toBe(0);
+    expect(kgToLbs(kg(0))).toBe(lbs(0));
   });
 
   test("lbsToKg handles zero", () => {
-    expect(lbsToKg(0)).toBe(0);
+    expect(lbsToKg(lbs(0))).toBe(kg(0));
   });
 
   test("kgToLbs handles very large values", () => {
-    expect(kgToLbs(1000)).toBeCloseTo(2204.62, 1);
-    expect(kgToLbs(500.5)).toBeCloseTo(1103.41, 1);
+    expect(kgToLbs(kg(1000))).toBeCloseTo(2204.62, 1);
+    expect(kgToLbs(kg(500.5))).toBeCloseTo(1103.41, 1);
   });
 
   test("lbsToKg handles very large values", () => {
-    expect(lbsToKg(1000)).toBeCloseTo(453.59, 2);
-    expect(lbsToKg(999.99)).toBeCloseTo(453.59, 2);
+    expect(lbsToKg(lbs(1000))).toBeCloseTo(453.59, 2);
+    expect(lbsToKg(lbs(999.99))).toBeCloseTo(453.59, 2);
   });
 
   test("kgToLbs handles small fractional values", () => {
-    expect(kgToLbs(0.5)).toBeCloseTo(1.10, 2);
-    expect(kgToLbs(1.25)).toBeCloseTo(2.76, 2);
+    expect(kgToLbs(kg(0.5))).toBeCloseTo(1.10, 2);
+    expect(kgToLbs(kg(1.25))).toBeCloseTo(2.76, 2);
   });
 
   test("lbsToKg handles small fractional values", () => {
-    expect(lbsToKg(2.5)).toBeCloseTo(1.13, 2);
-    expect(lbsToKg(5.5)).toBeCloseTo(2.49, 2);
+    expect(lbsToKg(lbs(2.5))).toBeCloseTo(1.13, 2);
+    expect(lbsToKg(lbs(5.5))).toBeCloseTo(2.49, 2);
   });
 
   test("conversions are reversible", () => {
-    expect(lbsToKg(kgToLbs(100))).toBeCloseTo(100, 5);
-    expect(kgToLbs(lbsToKg(220))).toBeCloseTo(220, 5);
-    expect(lbsToKg(kgToLbs(45.5))).toBeCloseTo(45.5, 5);
+    expect(lbsToKg(kgToLbs(kg(100)))).toBeCloseTo(100, 5);
+    expect(kgToLbs(lbsToKg(lbs(220)))).toBeCloseTo(220, 5);
+    expect(lbsToKg(kgToLbs(kg(45.5)))).toBeCloseTo(45.5, 5);
   });
 
   test("displayWeight formats correctly", () => {
