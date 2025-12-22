@@ -1,0 +1,8 @@
+pre-commit:
+  parallel: true
+  jobs:
+    - name: typecheck
+      run: nix develop -c npx tsc --noEmit
+
+    - name: test
+      run: nix develop -c bun test
