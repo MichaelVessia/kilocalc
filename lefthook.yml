@@ -2,13 +2,13 @@ pre-commit:
   parallel: true
   jobs:
     - name: typecheck
-      run: nix develop -c npx tsc --noEmit
+      run: nix develop -c bun run typecheck
 
     - name: test
       run: nix develop -c bun test
 
     - name: lint
-      run: nix develop -c npx oxlint
+      run: nix develop -c bun run lint
 
     - name: format
-      run: nix develop -c npx oxfmt src
+      run: nix develop -c bun run format:check

@@ -27,7 +27,7 @@ bun run dev
 bun test
 
 # Type check
-npx tsc --noEmit
+bun run typecheck
 
 # Build for production
 bun run build
