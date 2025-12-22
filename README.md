@@ -32,11 +32,6 @@ npx tsc --noEmit
 # Build for production
 bun run build
 ```
-
-## Type Safety
-
-Uses TypeScript with branded types for `Kg` and `Lbs` to prevent accidental unit mixing at compile time.
-
 ## License
 
 See [LICENSE](LICENSE) for details.
