@@ -14,23 +14,13 @@ Part of the [OpenPowerlifting](https://www.openpowerlifting.org/) / [PLSource](h
 
 ## Development
 
-Requires [Nix](https://nixos.org/) with flakes enabled.
+Requires [Bun](https://bun.sh/). Either use `nix develop` or install Bun directly and run `bun install`.
 
 ```bash
-# Enter dev shell
-nix develop
-
-# Run dev server
-bun run dev
-
-# Run tests
-bun test
-
-# Type check
-bun run typecheck
-
-# Build for production
-bun run build
+bun run dev        # Dev server
+bun test           # Run tests
+bun run typecheck  # Type check
+bun run build      # Production build
 ```
 ## License
 
