@@ -6,3 +6,9 @@ pre-commit:
 
     - name: test
       run: nix develop -c bun test
+
+    - name: lint
+      run: nix develop -c npx oxlint
+
+    - name: format
+      run: nix develop -c npx oxfmt src

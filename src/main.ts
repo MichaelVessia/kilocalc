@@ -5,8 +5,6 @@ import {
   plateRound,
   kg,
   lbs,
-  type Kg,
-  type Lbs,
   type Unit,
   type RoundingMode,
 } from "./logic/units.ts";
@@ -106,12 +104,10 @@ function loadState(): void {
 
   try {
     const parsed: SavedState = JSON.parse(saved);
-    state.totalWeight =
-      parsed.totalWeight !== undefined ? parsed.totalWeight : 100;
+    state.totalWeight = parsed.totalWeight !== undefined ? parsed.totalWeight : 100;
     state.unit = parsed.unit || "kg";
     state.rounding = parsed.rounding || "nearest";
-    state.useCollars =
-      parsed.useCollars !== undefined ? parsed.useCollars : true;
+    state.useCollars = parsed.useCollars !== undefined ? parsed.useCollars : true;
 
     if (parsed.savedWeights) {
       state.savedWeights = parsed.savedWeights;
@@ -136,8 +132,7 @@ function loadState(): void {
 
 // Helper functions
 function getPlates(unit: Unit): Plate[] {
-  const plates =
-    unit === "kg" ? state.availablePlatesKg : state.availablePlatesLbs;
+  const plates = unit === "kg" ? state.availablePlatesKg : state.availablePlatesLbs;
   return plates.filter((plate) => plate.pairs > 0);
 }
 
@@ -231,7 +226,7 @@ function createBarbellElement(
   unit: Unit,
   platesAvailable: Plate[],
   barWeightVal: string,
-  collarWeightVal: string
+  collarWeightVal: string,
 ): HTMLDivElement {
   const container = document.createElement("div");
 
@@ -246,8 +241,7 @@ function createBarbellElement(
 
   // Plates
   barLoad.forEach((plateWeight) => {
-    const numWeight =
-      typeof plateWeight === "string" ? parseFloat(plateWeight) : plateWeight;
+    const numWeight = typeof plateWeight === "string" ? parseFloat(plateWeight) : plateWeight;
     if (platesAvailable.some((p) => p.weight === numWeight)) {
       const plate = createPlateElement(numWeight, unit);
       plateContainer.appendChild(plate);
@@ -272,8 +266,7 @@ function createBarbellElement(
 
   // Remainder
   const remainder = barLoad.filter((plateWeight) => {
-    const numWeight =
-      typeof plateWeight === "string" ? parseFloat(plateWeight) : plateWeight;
+    const numWeight = typeof plateWeight === "string" ? parseFloat(plateWeight) : plateWeight;
     return !platesAvailable.some((p) => p.weight === numWeight);
   });
 
@@ -304,16 +297,14 @@ function renderBarbells(): void {
 
   // If total weight < bar + collars, don't show collars in UI
   const displayCollarWeight =
-    state.totalWeight < state.barWeight + effectiveCollarWeight * 2
-      ? 0
-      : effectiveCollarWeight;
+    state.totalWeight < state.barWeight + effectiveCollarWeight * 2 ? 0 : effectiveCollarWeight;
 
   // Primary barbell
   const barLoad = weightToBarLoad(
     state.totalWeight,
     getPlates(state.unit),
     state.barWeight,
-    effectiveCollarWeight
+    effectiveCollarWeight,
   );
 
   const primaryCol = document.createElement("div");
@@ -329,22 +320,17 @@ function renderBarbells(): void {
     state.unit,
     getPlates(state.unit),
     displayWeight(state.barWeight),
-    displayWeight(displayCollarWeight)
+    displayWeight(displayCollarWeight),
   );
   primaryCol.appendChild(primaryBarbell);
 
   // Converted barbell
-  const convert = state.unit === "kg" 
-    ? (v: number) => kgToLbs(kg(v)) 
-    : (v: number) => lbsToKg(lbs(v));
+  const convert =
+    state.unit === "kg" ? (v: number) => kgToLbs(kg(v)) : (v: number) => lbsToKg(lbs(v));
   const otherUnit: Unit = state.unit === "kg" ? "lbs" : "kg";
   const otherSmallestPlate = getSmallestPlate(otherUnit);
   const convertedWeight = convert(state.totalWeight);
-  const otherWeight = plateRound(
-    convertedWeight,
-    otherSmallestPlate,
-    state.rounding
-  );
+  const otherWeight = plateRound(convertedWeight, otherSmallestPlate, state.rounding);
 
   let otherBarWeight: number;
   if (otherUnit === "lbs" && state.barWeight === 20) {
@@ -373,7 +359,7 @@ function renderBarbells(): void {
     otherWeight,
     getPlates(otherUnit),
     otherBarWeight,
-    otherCollarWeight
+    otherCollarWeight,
   );
 
   const otherCol = document.createElement("div");
@@ -389,7 +375,7 @@ function renderBarbells(): void {
     otherUnit,
     getPlates(otherUnit),
     displayWeight(otherBarWeight),
-    displayWeight(otherDisplayCollarWeight)
+    displayWeight(otherDisplayCollarWeight),
   );
   otherCol.appendChild(otherBarbell);
 
@@ -425,8 +411,7 @@ function renderPlatesInputs(): void {
     const colorIndicator = document.createElement("span");
     colorIndicator.className = "color-indicator";
     colorIndicator.style.backgroundColor = colors.plateColor;
-    colorIndicator.style.border =
-      colors.plateColor === "white" ? "1px solid #ccc" : "none";
+    colorIndicator.style.border = colors.plateColor === "white" ? "1px solid #ccc" : "none";
 
     label.insertBefore(colorIndicator, label.firstChild);
     label.style.cursor = "pointer";
@@ -463,8 +448,7 @@ function renderPlatesInputs(): void {
     const colorIndicator = document.createElement("span");
     colorIndicator.className = "color-indicator";
     colorIndicator.style.backgroundColor = colors.plateColor;
-    colorIndicator.style.border =
-      colors.plateColor === "white" ? "1px solid #ccc" : "none";
+    colorIndicator.style.border = colors.plateColor === "white" ? "1px solid #ccc" : "none";
 
     label.insertBefore(colorIndicator, label.firstChild);
     label.style.cursor = "pointer";
@@ -605,16 +589,13 @@ function setupEventListeners(): void {
       state.collarWeight = state.savedWeights[newUnit].collar;
 
       // Update input fields
-      const barWeightInput = document.getElementById(
-        "bar-weight-input"
-      ) as HTMLInputElement | null;
+      const barWeightInput = document.getElementById("bar-weight-input") as HTMLInputElement | null;
       const collarWeightInput = document.getElementById(
-        "collar-weight-input"
+        "collar-weight-input",
       ) as HTMLInputElement | null;
 
       if (barWeightInput) barWeightInput.value = String(state.barWeight);
-      if (collarWeightInput)
-        collarWeightInput.value = String(state.collarWeight);
+      if (collarWeightInput) collarWeightInput.value = String(state.collarWeight);
 
       // Update unit labels
       const barUnitLabel = document.getElementById("bar-unit-label");
@@ -630,9 +611,7 @@ function setupEventListeners(): void {
       target.classList.add("active");
 
       // Update hidden radio for compatibility
-      const unitRadio = document.getElementById(
-        `unit-${newUnit}`
-      ) as HTMLInputElement | null;
+      const unitRadio = document.getElementById(`unit-${newUnit}`) as HTMLInputElement | null;
       if (unitRadio) unitRadio.checked = true;
 
       saveState();
@@ -641,16 +620,14 @@ function setupEventListeners(): void {
   });
 
   // Rounding radios
-  document
-    .querySelectorAll<HTMLInputElement>('input[name="rounding"]')
-    .forEach((radio) => {
-      radio.addEventListener("change", (e) => {
-        const target = e.target as HTMLInputElement;
-        state.rounding = target.value as RoundingMode;
-        saveState();
-        renderBarbells();
-      });
+  document.querySelectorAll<HTMLInputElement>('input[name="rounding"]').forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      const target = e.target as HTMLInputElement;
+      state.rounding = target.value as RoundingMode;
+      saveState();
+      renderBarbells();
     });
+  });
 
   // Bar weight
   const barWeightInput = document.getElementById("bar-weight-input");
@@ -686,9 +663,7 @@ function setupEventListeners(): void {
       state.useCollars = target.checked;
 
       // Update collar weight input to reflect effective value
-      const collarInput = document.getElementById(
-        "collar-weight-input"
-      ) as HTMLInputElement | null;
+      const collarInput = document.getElementById("collar-weight-input") as HTMLInputElement | null;
       if (collarInput) {
         if (state.useCollars) {
           // Set to saved collar weight for this unit
@@ -738,9 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderBarbells();
 
   // Update UI to match loaded state
-  const totalWeightInput = document.getElementById(
-    "total-weight-input"
-  ) as HTMLInputElement | null;
+  const totalWeightInput = document.getElementById("total-weight-input") as HTMLInputElement | null;
   if (totalWeightInput) {
     totalWeightInput.value = String(state.totalWeight) || "";
   }
@@ -749,18 +722,12 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll<HTMLButtonElement>(".unit-btn").forEach((btn) => {
     btn.classList.toggle("active", btn.dataset.unit === state.unit);
   });
-  const unitRadio = document.getElementById(
-    `unit-${state.unit}`
-  ) as HTMLInputElement | null;
+  const unitRadio = document.getElementById(`unit-${state.unit}`) as HTMLInputElement | null;
   if (unitRadio) unitRadio.checked = true;
 
   // Update bar/collar inputs
-  const barWeightInput = document.getElementById(
-    "bar-weight-input"
-  ) as HTMLInputElement | null;
-  const collarInput = document.getElementById(
-    "collar-weight-input"
-  ) as HTMLInputElement | null;
+  const barWeightInput = document.getElementById("bar-weight-input") as HTMLInputElement | null;
+  const collarInput = document.getElementById("collar-weight-input") as HTMLInputElement | null;
 
   if (barWeightInput) barWeightInput.value = String(state.barWeight);
   if (collarInput) {
@@ -777,13 +744,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update use collars checkbox
   const useCollarsCheckbox = document.getElementById(
-    "use-collars-checkbox"
+    "use-collars-checkbox",
   ) as HTMLInputElement | null;
   if (useCollarsCheckbox) useCollarsCheckbox.checked = state.useCollars;
 
   // Update rounding radio
   const roundingRadio = document.querySelector<HTMLInputElement>(
-    `input[name="rounding"][value="${state.rounding}"]`
+    `input[name="rounding"][value="${state.rounding}"]`,
   );
   if (roundingRadio) roundingRadio.checked = true;
 });

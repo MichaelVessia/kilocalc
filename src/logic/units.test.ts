@@ -33,7 +33,7 @@ describe("Unit conversion", () => {
   });
 
   test("kgToLbs handles small fractional values", () => {
-    expect(kgToLbs(kg(0.5))).toBeCloseTo(1.10, 2);
+    expect(kgToLbs(kg(0.5))).toBeCloseTo(1.1, 2);
     expect(kgToLbs(kg(1.25))).toBeCloseTo(2.76, 2);
   });
 

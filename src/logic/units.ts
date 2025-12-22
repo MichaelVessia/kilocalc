@@ -33,7 +33,7 @@ export const displayWeight = (weight: number): string => {
 export const plateRound = (
   weight: number,
   smallestPlate: number,
-  rounding: RoundingMode
+  rounding: RoundingMode,
 ): number => {
   const roundTo = smallestPlate * 2;
   let roundingFn: (x: number) => number;

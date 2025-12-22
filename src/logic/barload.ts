@@ -12,18 +12,15 @@ export const weightToBarLoad = (
   weight: number,
   plates: Plate[],
   barWeight: number,
-  collarWeight: number
+  collarWeight: number,
 ): BarLoad => {
   // The plates that will go on one side of the bar
   const barLoad: BarLoad = [];
 
   // If total weight is less than bar + collars, ignore collars
-  const effectiveCollarWeight =
-    weight < barWeight + collarWeight * 2 ? 0 : collarWeight;
+  const effectiveCollarWeight = weight < barWeight + collarWeight * 2 ? 0 : collarWeight;
 
-  const barAndCollarWeight = Number(
-    displayWeight(barWeight + effectiveCollarWeight * 2)
-  );
+  const barAndCollarWeight = Number(displayWeight(barWeight + effectiveCollarWeight * 2));
   // Amount of weight to go on one side of the bar
   let sideWeight = (weight - barAndCollarWeight) / 2;
 
